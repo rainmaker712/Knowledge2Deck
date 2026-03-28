@@ -6,3 +6,19 @@ Authors: NVIDIA: Aaron Blakeman, Aaron Grattafiori, Aarti Basant, Abhibha Gupta,
 > We present Nemotron 3 Nano 30B-A3B, a Mixture-of-Experts hybrid Mamba-Transformer language model. Nemotron 3 Nano was pretrained on 25 trillion text tokens, including more than 3 trillion new unique tokens over Nemotron 2, followed by supervised fine tuning and large-scale RL on diverse environments. Nemotron 3 Nano achieves better accuracy than our previous generation Nemotron 2 Nano while activating less than half of the parameters per forward pass. It achieves up to 3.3x higher inference throughput than similarly-sized open models like GPT-OSS-20B and Qwen3-30B-A3B-Thinking-2507, while also being more accurate on popular benchmarks. Nemotron 3 Nano demonstrates enhanced agentic, reasoning, and chat abilities and supports context lengths up to 1M tokens. We release both our pretrained Nemotron 3 Nano 30B-A3B Base and post-trained Nemotron 3 Nano 30B-A3B checkpoints on Hugging Face.
 
 - Hybrid Mamba MoE Arch.
+
+## Follow-Up Questions
+
+1. Nemotron 3 Nano combines three architectural choices: Mixture-of-Experts, Mamba state-space layers, and a Transformer backbone. How do these three components interact — specifically, do the MoE routing decisions and Mamba recurrence create any interference in gradient flow or inference dependencies?
+
+2. The model activates less than half the parameters per forward pass compared to the previous generation (Nemotron 2 Nano) while achieving better accuracy. Is this improvement attributable to the architectural changes (MoE+Mamba), the additional training data (new 3T tokens), or the RL post-training — and how would you attribute the gains?
+
+3. The model claims up to 3.3x higher inference throughput than GPT-OSS-20B and Qwen3-30B-A3B-Thinking-2507. Under what conditions (batch size, sequence length, hardware configuration) is this throughput advantage most and least pronounced, and what does it imply for deployment at different serving scales?
+
+4. Supporting 1M token context windows is stated as a feature. What specific architectural choices in the hybrid Mamba-Transformer enable 1M context, and what are the practical quality degradation patterns at very long contexts compared to standard attention-only models?
+
+5. The model underwent "large-scale RL on diverse environments" after SFT. What does "diverse environments" mean in this context — is it multi-step agentic tasks, code execution, tool use, or something else — and how does the RL reward signal differ between these environment types?
+
+6. The model was pretrained on 25 trillion tokens total, with 3 trillion being "new unique tokens over Nemotron 2." What is the significance of token novelty in continued pretraining — does adding semantically new tokens have a different effect than reprocessing previously seen data with different formatting or augmentation?
+
+7. Given that Nemotron 3 Nano is a 30B total parameter model activating ~3B per token (MoE), how does its effective capacity compare to a dense 3B model and a dense 30B model for tasks that require either broad knowledge or deep sequential reasoning?

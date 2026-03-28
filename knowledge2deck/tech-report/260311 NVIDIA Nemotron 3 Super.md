@@ -17,3 +17,19 @@ NVIDIA Corporation (357 authors; see arXiv:2512.20856)
 - **The "Thinking Tax" Problem**: Chaining many reasoning steps in multi-agent systems accumulates enormous token budgets. The LatentMoE + Mamba combo directly attacks this — same reasoning depth, far lower per-token compute cost. This is the core design thesis of the model.
 
 - **RL > RLHF for Agentic Capability**: Multi-environment RL across 21 configurations (math, coding, SWE, tool use, search, chat) with 1.2M rollouts is what produces robust agentic behavior — narrow RLHF alone doesn't get there.
+
+## Follow-Up Questions
+
+1. LatentMoE projects token embeddings into a lower-rank latent space before expert routing, reducing routing cost by 4x while still activating 22 of 512 experts. Why does projecting into a latent space before routing reduce cost, and what information might be lost in this projection that could affect which experts get selected?
+
+2. The Mamba-2 hybrid interleaves SSM layers, Transformer attention layers, and LatentMoE layers across 88 total layers. How do the paper's designers determine the optimal ratio and placement of these three layer types — is this empirically searched or theoretically motivated?
+
+3. Checkpoint merging during the stable LR phase (sliding window weighted averaging) improved performance by 2-4 benchmark points while saving 16% compute. What is the mechanistic explanation for why averaging checkpoints during training improves generalization, and why is this effect strongest during the stable LR phase rather than the warmup or decay phases?
+
+4. Nemotron 3 Super is the first model trained natively in NVFP4 (4-bit floating point) from the start. What stability challenges arise from training in such low precision, and why are QKV projections, embeddings, and latent projections specifically kept in higher precision (BF16/MXFP8)?
+
+5. The "Thinking Tax" problem is identified as a core motivation for the architecture: multi-agent reasoning chains accumulate massive token budgets. How does the LatentMoE + Mamba combination specifically reduce per-token compute without reducing reasoning depth, and is there a quantitative relationship between the compute savings and the depth of reasoning that can be sustained?
+
+6. RL across 21 environment configurations with 1.2M rollouts is credited for robust agentic behavior over narrow RLHF. What properties of multi-environment RL training lead to more general capability — is it the diversity of reward signals, the forced exploration across different task structures, or the sheer scale of rollouts?
+
+7. The model achieves 91.75% on RULER at 1M token context. What specific architectural features enable reliable information retrieval at this extreme context length, and what are the known failure patterns of hybrid Mamba-Transformer models when the relevant information is distributed across very long contexts rather than concentrated locally?

@@ -54,3 +54,19 @@ Numeric Tokens: Atomic digit tokens (0-9) for better mathematical precision.
 Multi-Stage Training: A 4-stage curriculum:
 
 Common Knowledge → STEM & Coding → Mid (Context Extension) → Agentic Mid (Final Alignment).
+
+## Follow-Up Questions
+
+1. Youtu-LLM is pre-trained from scratch rather than distilled from a larger model. What are the theoretical and practical advantages of building agentic capability through pre-training versus distillation, and under what circumstances might distillation still be preferred for a sub-2B model?
+
+2. The "Commonsense-STEM-Agent" curriculum progressively shifts data distribution across training stages. Why is the ordering of these stages important — what would happen if agentic data were introduced at the beginning of training rather than at the end?
+
+3. The Rewriting Paradigm (Reasoning → Curation → Synthesis) is used to address redundancy in raw Chain-of-Thought trajectories. How does this approach differ from simply filtering out low-quality CoT examples, and what kinds of reasoning errors does it specifically target?
+
+4. Youtu-LLM uses Multi-Head Latent Attention (MLA) rather than Grouped Query Attention (GQA). What are the key trade-offs between these attention mechanisms in terms of memory footprint, inference speed, and representational capacity — especially at the sub-2B parameter scale?
+
+5. The model uses atomic digit tokens (0–9) rather than subword tokenization for numbers. How does this design choice affect mathematical reasoning and arithmetic precision, and what are the potential downsides for tasks that involve large numbers or numeric formatting?
+
+6. Youtu-LLM allocates roughly 200B tokens of agentic data — a very high ratio for a 1.9B model. What risks does this heavy specialization introduce, such as catastrophic forgetting of general language capabilities, and how does the curriculum design attempt to mitigate these risks?
+
+7. The paper claims state-of-the-art performance on agent-specific tasks for sub-2B models. What benchmarks or evaluation dimensions would you consider most critical for validating genuine agentic intelligence versus task-specific memorization, and are there limitations in the current evaluation methodology?

@@ -6,3 +6,19 @@ Authors: NVIDIA: Aarti Basant, Abhijit Khairnar, Abhijit Paithankar, Abhinav Kha
 > We introduce Nemotron-Nano-9B-v2, a hybrid Mamba-Transformer language model designed to increase throughput for reasoning workloads while achieving state-of-the-art accuracy compared to similarly-sized models. Nemotron-Nano-9B-v2 builds on the Nemotron-H architecture, in which the majority of the self-attention layers in the common Transformer architecture are replaced with Mamba-2 layers, to achieve improved inference speed when generating the long thinking traces needed for reasoning. We create Nemotron-Nano-9B-v2 by first pre-training a 12-billion-parameter model (Nemotron-Nano-12B-v2-Base) on 20 trillion tokens using an FP8 training recipe. After aligning Nemotron-Nano-12B-v2-Base, we employ the Minitron strategy to compress and distill the model with the goal of enabling inference on up to 128k tokens on a single NVIDIA A10G GPU (22GiB of memory, bfloat16 precision). Compared to existing similarly-sized models (e.g., Qwen3-8B), we show that Nemotron-Nano-9B-v2 achieves on-par or better accuracy on reasoning benchmarks while achieving up to 6x higher inference throughput in reasoning settings like 8k input and 16k output tokens. We are releasing Nemotron-Nano-9B-v2, Nemotron-Nano12B-v2-Base, and Nemotron-Nano-9B-v2-Base checkpoints along with the majority of our pre- and post-training datasets on Hugging Face.
 
 - Focus on data sections.
+
+## Follow-Up Questions
+
+1. Nemotron-Nano-9B-v2 replaces "the majority of self-attention layers" with Mamba-2 layers. Why does this substitution improve throughput specifically for long reasoning traces, and what are the theoretical differences in how Mamba-2 handles long sequences compared to standard attention?
+
+2. The model is pre-trained as 12B parameters and then compressed to 9B using the Minitron strategy. What does Minitron compression involve, and how does post-training compression compare to training a 9B model directly from scratch in terms of final performance and efficiency?
+
+3. The training uses an FP8 training recipe on 20 trillion tokens. What numerical stability challenges arise when training hybrid Mamba-Transformer models in FP8, and how does the Mamba state-space model component behave differently from attention layers under reduced precision?
+
+4. The model achieves up to 6x higher inference throughput compared to Qwen3-8B on long reasoning workloads (8k input + 16k output). Is this speedup attributable primarily to the Mamba architecture, the Minitron compression, or both — and how would you isolate each contribution experimentally?
+
+5. The ability to run 128k token context on a single A10G GPU (22GiB) is a stated design goal. What architectural and quantization decisions enable this memory efficiency, and what are the accuracy trade-offs of fitting such long contexts into constrained memory?
+
+6. The model is released alongside "the majority of pre- and post-training datasets." What motivates partial rather than full dataset release, and how does incomplete data transparency affect reproducibility and community trust in reported benchmark results?
+
+7. What are the known failure modes of hybrid Mamba-Transformer models compared to pure Transformer models — specifically, in what types of tasks does replacing attention with Mamba layers most hurt performance, and has Nemotron-Nano-9B-v2 found effective mitigations?

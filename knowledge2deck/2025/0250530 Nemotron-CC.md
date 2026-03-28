@@ -9,3 +9,19 @@ Authors: Dan Su, Kezhi Kong, Ying Lin, Joseph Jennings, Brandon Norick, Markus K
 - 성능: 1T 토큰 학습 시 DCLM 대비 MMLU 5.6점 향상.
 - 규모: 전체 6.3T 토큰 데이터셋은 DCLM과 동급의 성능을 내면서도 4배 더 많은 고유 토큰을 보유.
 - 결과: 15T 토큰 학습 시 Llama 3.1 8B 모델보다 우수한 성능(MMLU +5점)을 달성.
+
+## Follow-Up Questions
+
+1. FineWeb-Edu and DCLM remove 90% of Common Crawl data through aggressive model-based filtering. What are the trade-offs between high data quality (via aggressive filtering) and data diversity (via retaining more data), and at what training token horizon does this trade-off become critical?
+
+2. Nemotron-CC combines classifier ensembling with synthetic data rephrasing. Why is an ensemble of classifiers more effective than a single high-quality classifier for data filtering, and what types of data quality signals does each classifier in the ensemble likely capture?
+
+3. The paper shows that the high-quality subset achieves +5.6 MMLU over DCLM at 1T tokens, while the full 6.3T dataset only matches DCLM at the same token count. What does this imply about the relationship between data quality, data quantity, and training efficiency at different compute budgets?
+
+4. Having 4x more unique real tokens than DCLM is positioned as a key advantage for long-horizon training. What specific risks arise when training on repeated or semantically similar tokens beyond a certain threshold, and how does data diversity relate to the scaling laws for compute-optimal training?
+
+5. Synthetic data rephrasing is used as part of the pipeline rather than pure filtering. How does rephrasing change the distribution of the original web data, and what risks does this introduce in terms of model collapse or distribution shift compared to natural text?
+
+6. The final model outperforms Llama 3.1 8B across multiple benchmarks despite being trained on partially overlapping data. How should we interpret benchmark improvements when the evaluation sets themselves may overlap with Common Crawl-derived training data?
+
+7. The paper reduces reliance on "heuristic filters." What are the limitations of heuristic-based data filtering compared to model-based approaches, and are there categories of content where heuristic filters outperform model-based classifiers even at scale?

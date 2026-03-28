@@ -28,3 +28,18 @@ Authors: Upstage Solar Team
 
     
     
+## Follow-Up Questions
+
+1. Solar Open addresses data scarcity for underserved languages by synthesizing 4.5T tokens. What are the risks of relying heavily on synthetic data for a language model targeting a low-resource language, and how would you validate that the synthetic data preserves the linguistic and cultural nuances of Korean rather than biasing the model toward its source language (likely English)?
+
+2. The paper uses a progressive curriculum that jointly optimizes composition, quality thresholds, and domain coverage over 20 trillion tokens. Why is a progressive curriculum preferable to training on a fixed mixed dataset, and how do you determine the right transitions between stages without exhaustive ablations?
+
+3. SnapPO is introduced as a framework for scalable RL. What problem with standard RL algorithms like PPO or DPO does SnapPO specifically address at the scale of a 102B MoE model, and what trade-offs does its "efficient optimization" make compared to standard approaches?
+
+4. The pre-training section notes that synthetic data ratios increase from 10% to 64% across stages, and Korean content is boosted at the end. What are the potential negative effects of this late-stage domain reweighting on the model's English capabilities, and how would you measure and mitigate catastrophic forgetting?
+
+5. The SFT data pipeline uses 5 models for data generation and LLM-as-judge for quality assessment. What are the systemic biases that accumulate when using LLMs to both generate and judge training data, and how might these biases manifest differently for Korean versus English outputs?
+
+6. The agentic SFT approach builds a Toollist and API Graph rather than relying on existing benchmarks. What advantages does this task-simulation approach offer, and what gaps in real-world agent evaluation might it still fail to capture?
+
+7. Given that Solar Open targets "under-served languages" with MoE architecture, what specific architectural or training choices in this work are likely to generalize to other underserved language pairs, and which decisions appear to be Korean-specific?

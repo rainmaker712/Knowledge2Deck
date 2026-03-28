@@ -8,3 +8,18 @@ Authors: Yoav Gelberg, Koshi Eguchi, Takuya Akiba, Edoardo Cetin
 Sakana가 오랫만에 다시 등장했군요
 일반 학습 이후에 PE를 제거하고 원래 Length를 Cont. Learning으로 진행 후 Zero-Shot Extention.
 
+## Follow-Up Questions
+
+1. The paper argues that positional embeddings (PEs) are critical during pretraining as an inductive bias for convergence, but become a liability at inference time. Why does this dual role create the specific generalization bottleneck that DroPE addresses?
+
+2. What does the "short recalibration phase" after dropping PEs involve, and why is it needed? What does the model need to relearn or adjust during this phase?
+
+3. How does the over-reliance on explicit positional information specifically prevent length generalization in popular PE-scaling methods like RoPE scaling or ALiBi? What breaks when the model encounters sequence lengths beyond the training distribution?
+
+4. The method achieves zero-shot context extension without long-context finetuning. What are the remaining failure modes or edge cases where DroPE might still underperform compared to models specifically finetuned for long context?
+
+5. The paper claims PEs can be "safely removed after pretraining" - what mechanism allows the model to maintain position sensitivity without explicit positional embeddings, and does this imply attention patterns alone carry sufficient positional information?
+
+6. How does DroPE compare to training from scratch on NoPE (No Positional Embedding) architectures, and what does this comparison reveal about when in the training process positional information becomes most critical?
+
+7. Given that DroPE relies on a recalibration phase after dropping PEs, what factors determine how long this phase needs to be, and is there a risk that recalibration degrades performance on the original training context length?
