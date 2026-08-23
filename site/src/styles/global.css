@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* UI_GUIDE.md: 다크 고정, 무채색 + emerald 포인트 */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: var(--color-neutral-300, #d4d4d4);
+}

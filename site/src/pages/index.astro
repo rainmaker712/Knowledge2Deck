@@ -1,0 +1,99 @@
+---
+import path from 'node:path';
+import Base from '../layouts/Base.astro';
+import PaperRow from '../components/PaperRow.astro';
+import { loadPapers } from '../lib/papers.js';
+
+const contentRoot = path.resolve(process.cwd(), '../knowledge2deck');
+const papers = loadPapers(contentRoot);
+
+// 연도(추가일 기준) 역순 그룹
+const groups = new Map<string, typeof papers>();
+for (const p of papers) {
+  const year = p.dateAdded.slice(0, 4);
+  if (!groups.has(year)) groups.set(year, []);
+  groups.get(year)!.push(p);
+}
+const years = [...groups.keys()].sort().reverse();
+---
+
+<Base title="Knowledge2Deck — AI paper archive">
+  <div class="mb-6 flex items-center justify-between gap-4">
+    <h1 class="text-2xl font-semibold text-white">Papers</h1>
+    <span class="text-xs text-neutral-500">{papers.length} papers</span>
+  </div>
+
+  <input
+    id="search"
+    type="search"
+    placeholder="제목·저자·초록 검색…"
+    class="mb-4 w-full rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2.5 text-sm text-white placeholder-neutral-500 focus:border-neutral-600 focus:outline-none"
+  />
+
+  <div id="filters" class="mb-8 flex gap-2 text-xs">
+    <button data-filter="all" class="filter-chip rounded-md border border-neutral-700 px-3 py-1.5 text-white" aria-pressed="true">전체</button>
+    <button data-filter="tech-report" class="filter-chip rounded-md border border-neutral-800 px-3 py-1.5 text-neutral-400 hover:text-neutral-300" aria-pressed="false">tech report</button>
+    <button data-filter="slides" class="filter-chip rounded-md border border-neutral-800 px-3 py-1.5 text-neutral-400 hover:text-neutral-300" aria-pressed="false">slides 있음</button>
+  </div>
+
+  <div class="space-y-8">
+    {
+      years.map((year) => (
+        <section data-year-section>
+          <h2 class="mb-3 text-sm font-medium text-neutral-400">{year}</h2>
+          <ul class="space-y-2">
+            {groups.get(year)!.map((paper) => (
+              <PaperRow paper={paper} />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <p id="no-results" class="hidden text-sm text-neutral-500">검색 결과 없음</p>
+
+  <script>
+    const input = document.getElementById('search') as HTMLInputElement;
+    const rows = [...document.querySelectorAll<HTMLElement>('.paper-row')];
+    const sections = [...document.querySelectorAll<HTMLElement>('[data-year-section]')];
+    const chips = [...document.querySelectorAll<HTMLButtonElement>('.filter-chip')];
+    const noResults = document.getElementById('no-results')!;
+    let filter = 'all';
+
+    function apply() {
+      const q = input.value.trim().toLowerCase();
+      let visible = 0;
+      for (const row of rows) {
+        const matchQ = q === '' || (row.dataset.search ?? '').includes(q);
+        const matchF =
+          filter === 'all' ||
+          (filter === 'slides' ? row.dataset.slides === 'y' : row.dataset.category === filter);
+        const hit = matchQ && matchF;
+        row.classList.toggle('hidden', !hit);
+        if (hit) visible++;
+      }
+      for (const section of sections) {
+        const any = section.querySelector('.paper-row:not(.hidden)') !== null;
+        section.classList.toggle('hidden', !any);
+      }
+      noResults.classList.toggle('hidden', visible > 0);
+    }
+
+    input.addEventListener('input', apply);
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        filter = chip.dataset.filter ?? 'all';
+        for (const c of chips) {
+          const active = c === chip;
+          c.setAttribute('aria-pressed', String(active));
+          c.classList.toggle('text-white', active);
+          c.classList.toggle('border-neutral-700', active);
+          c.classList.toggle('text-neutral-400', !active);
+          c.classList.toggle('border-neutral-800', !active);
+        }
+        apply();
+      });
+    }
+  </script>
+</Base>
