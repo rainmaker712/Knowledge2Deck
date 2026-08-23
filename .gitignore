@@ -151,8 +151,7 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
+# mkdocs documentation — 사용 안 함. site/는 Astro 소스라 추적한다 (빌드 산출물만 아래에서 제외)
 
 # mypy
 .mypy_cache/
@@ -211,3 +210,18 @@ __marimo__/
 .omc/
 .vscode/
 .claude/
+.agents/
+.codex/
+.superpowers/
+
+# Personal / sensitive
+.personal/
+IP_REVIEW.md
+.next-plan
+.archieve/
+# Astro site
+site/node_modules/
+site/dist/
+site/.astro/
+.gstack/
+site/public/slides/
